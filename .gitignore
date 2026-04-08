@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+.claude/
+
+token.json
+credentials.json
+
