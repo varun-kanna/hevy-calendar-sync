@@ -1,0 +1,10 @@
+[hevy]
+api_key = "your-hevy-api-key"
+
+[google_calendar]
+credentials_file = "credentials.json"
+calendar_id = "primary"
+
+[preferences]
+description_format = "detailed"
+weight_unit = "lbs"
