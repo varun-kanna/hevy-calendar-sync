@@ -79,6 +79,8 @@ def get_workouts_since(api_key: str, since: str) -> list[Workout]:
             headers=headers,
             params={"page": page, "pageSize": 10},
         )
+        if response.status_code == 401:
+            raise SystemExit("Error: Invalid Hevy API key. Check [hevy] api_key in config.toml.")
         response.raise_for_status()
         data = response.json()
 
