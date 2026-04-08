@@ -20,21 +20,21 @@ pip install -r requirements.txt
 
 Go to [hevy.com/settings?developer](https://www.hevyapp.com/settings?developer) after logging in and copy your API key.
 
-### 3. Set up Google Calendar access (one-time, ~10 minutes)
+### 3. Set up Google Calendar access (one-time)
 
 1. Go to [console.cloud.google.com](https://console.cloud.google.com) and sign in
 2. Click **Select a project → New Project** → name it anything (e.g. "hevy-sync") → **Create**
 3. In the search bar, type **Google Calendar API** → click the result → **Enable**
 4. Go to **APIs & Services → OAuth consent screen**
-5. Under **Audience**, select **External** → click **Create**
-6. Fill in an app name (anything) and your email for the support and developer contact fields → **Save and Continue**
-7. Skip the Scopes step → **Save and Continue**
-8. Under **Test users**, click **Add users**, enter your Google account email, click **Add** → **Save and Continue**
-9. Go to **APIs & Services → Credentials → Create Credentials → OAuth client ID**
-10. For application type choose **Desktop app** → name it anything → **Create**
-11. Click **Download JSON** → save the file as `credentials.json` in this folder
-
-> **Why test users?** Google restricts unverified apps to explicitly approved accounts. Since this is a personal tool, adding yourself once is the fix — no verification process needed.
+5. Click **Get started**
+6. Fill in an app name (anything) and your email for the support contact field → **Next**
+7. Under **Audience**, select **External** → **Next**
+8. Enter your email for the developer contact field → **Next**
+9. Agree to the terms → **Create**
+10. In the left sidebar click **Audience**, scroll to **Test users** → **Add users**, enter your Google account email → **Save**
+11. In the left sidebar click **Clients** → **Create client**
+12. For application type choose **Desktop app** → name it anything → **Create**
+13. Click **Download JSON** → save the file as `credentials.json` in this folder
 
 ### 4. Configure `config.toml`
 
@@ -44,12 +44,14 @@ api_key = "paste-your-hevy-api-key-here"
 
 [google_calendar]
 credentials_file = "credentials.json"
-calendar_id = "primary"         # "primary" = your main calendar
+calendar_id = "primary"         # see below
 
 [preferences]
 description_format = "detailed" # "minimal" or "detailed"
 weight_unit = "lbs"             # "kg" or "lbs"
 ```
+
+**Finding your `calendar_id`:** Use `"primary"` for your main Google Calendar. For any other calendar, open [calendar.google.com](https://calendar.google.com), click the three dots next to the calendar name → **Settings and sharing** → scroll to **Integrate calendar** → copy the **Calendar ID** (it looks like `abc123...@group.calendar.google.com`).
 
 ## Usage
 
