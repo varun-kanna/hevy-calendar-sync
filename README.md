@@ -2,6 +2,8 @@
 
 Syncs Hevy workouts to Google Calendar. Each workout becomes a calendar event with the exact start/end times recorded by Hevy.
 
+<img src="images/classes.png" width="49%"> <img src="images/work.png" width="49%">
+
 ## Requirements
 
 - Python 3.11+
@@ -64,6 +66,8 @@ The first time you run it, a browser window will open asking you to grant access
 Subsequent runs only fetch workouts logged since the last sync. Progress is tracked in `state.toml`.
 
 ## What the events look like
+
+![Detailed event view showing exercise sets and weights](images/logs.png)
 
 **Event title:** `Push Day · 12450.3 lbs`
 
