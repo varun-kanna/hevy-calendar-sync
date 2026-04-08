@@ -12,8 +12,6 @@ def main():
 
     try:
         workouts = get_workouts_since(config.hevy.api_key, state.last_synced_at)
-    except SystemExit:
-        raise
     except Exception as e:
         print(f"Error fetching workouts from Hevy: {e}")
         sys.exit(1)

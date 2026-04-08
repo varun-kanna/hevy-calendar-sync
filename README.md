@@ -1,8 +1,9 @@
 # hevy-calendar-sync
 
-Syncs Hevy workouts to Google Calendar. Each workout becomes a calendar event with the exact start/end times recorded by Hevy.
+Syncs Hevy workouts to Google Calendar. Each workout becomes a calendar event with the exact start/end times recorded by Hevy. On run, syncs all workouts logged since the last time the script was run. 
 
-<img src="images/classes.png" width="49%"> <img src="images/work.png" width="49%">
+<img src="images/classes.png" width="100%"> 
+<img src="images/work.png" width="100%">
 
 ## Requirements
 
