@@ -1,6 +1,7 @@
 __pycache__/
 .pytest_cache/
 .claude/
+docs/
 
 token.json
 credentials.json
