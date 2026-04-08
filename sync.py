@@ -1,7 +1,7 @@
 import sys
 from config import load_config, load_state, save_state, State
 from hevy import get_workouts_since
-from gcal import build_service, event_exists, sync_workout
+from gcal import build_service, validate_calendar, event_exists, sync_workout
 
 
 def main():
@@ -25,6 +25,7 @@ def main():
     print(f"Found {len(workouts)} new workout(s) to sync.")
 
     service = build_service(config, state)
+    validate_calendar(service, config.google_calendar.calendar_id)
     last_written_time = state.last_synced_at
 
     try:

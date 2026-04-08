@@ -3,6 +3,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 from hevy import Workout
 from config import Config, State
@@ -80,6 +81,18 @@ def build_service(config: Config, state: State):
             f.write(creds.to_json())
 
     return build("calendar", "v3", credentials=creds)
+
+
+def validate_calendar(service, calendar_id: str) -> None:
+    try:
+        service.events().list(calendarId=calendar_id, maxResults=1).execute()
+    except HttpError as e:
+        if e.status_code == 404:
+            raise SystemExit(
+                f"Error: Calendar '{calendar_id}' not found. "
+                "Check [google_calendar] calendar_id in config.toml."
+            )
+        raise
 
 
 def event_exists(service, calendar_id: str, workout_id: str) -> bool:
