@@ -18,17 +18,23 @@ pip install -r requirements.txt
 
 ### 2. Get your Hevy API key
 
-Go to [hevy.com/settings?developer](https://www.hevyapp.com/settings?developer) and copy your API key.
+Go to [hevy.com/settings?developer](https://www.hevyapp.com/settings?developer) after logging in and copy your API key.
 
-### 3. Set up Google Calendar access (one-time, ~5 minutes)
+### 3. Set up Google Calendar access (one-time, ~10 minutes)
 
 1. Go to [console.cloud.google.com](https://console.cloud.google.com) and sign in
 2. Click **Select a project → New Project** → name it anything (e.g. "hevy-sync") → **Create**
 3. In the search bar, type **Google Calendar API** → click the result → **Enable**
-4. Go to **APIs & Services → Credentials → Create Credentials → OAuth client ID**
-5. If asked to configure the consent screen first: choose **External**, fill in an app name, click through the rest
-6. For application type, choose **Desktop app** → name it anything → **Create**
-7. Click **Download JSON** → save the file as `credentials.json` in this folder
+4. Go to **APIs & Services → OAuth consent screen**
+5. Under **Audience**, select **External** → click **Create**
+6. Fill in an app name (anything) and your email for the support and developer contact fields → **Save and Continue**
+7. Skip the Scopes step → **Save and Continue**
+8. Under **Test users**, click **Add users**, enter your Google account email, click **Add** → **Save and Continue**
+9. Go to **APIs & Services → Credentials → Create Credentials → OAuth client ID**
+10. For application type choose **Desktop app** → name it anything → **Create**
+11. Click **Download JSON** → save the file as `credentials.json` in this folder
+
+> **Why test users?** Google restricts unverified apps to explicitly approved accounts. Since this is a personal tool, adding yourself once is the fix — no verification process needed.
 
 ### 4. Configure `config.toml`
 
