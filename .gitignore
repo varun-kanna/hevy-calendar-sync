@@ -6,4 +6,4 @@ docs/
 token.json
 credentials.json
 state.toml
-
+.env
