@@ -7,4 +7,4 @@ calendar_id = "primary"             # or a specific calendar ID
 
 [preferences]
 description_format = "detailed"     # "minimal" or "detailed"
-weight_unit = "lbs"                 # "kg" or "lbs"
+weight_unit = "lbs"               

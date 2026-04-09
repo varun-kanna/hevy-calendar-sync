@@ -1,7 +1,11 @@
+import os
 import sys
 import tomllib
 import tomli_w
 from dataclasses import dataclass
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @dataclass
@@ -38,19 +42,27 @@ def load_config(path: str = "config.toml") -> Config:
     with open(path, "rb") as f:
         data = tomllib.load(f)
 
+    # Environment variables take priority over config.toml values
+    hevy_section = data.get("hevy", {})
+    gcal_section = data.get("google_calendar", {})
+    pref = data.get("preferences", {})
+
+    hevy_api_key = os.environ.get("HEVY_API_KEY") or hevy_section.get("api_key", "")
+    credentials_file = gcal_section.get("credentials_file", "")
+    calendar_id = os.environ.get("GOOGLE_CALENDAR_ID") or gcal_section.get("calendar_id", "")
+
     required = {
-        "[hevy] api_key": data.get("hevy", {}).get("api_key"),
-        "[google_calendar] credentials_file": data.get("google_calendar", {}).get("credentials_file"),
-        "[google_calendar] calendar_id": data.get("google_calendar", {}).get("calendar_id"),
-        "[preferences] description_format": data.get("preferences", {}).get("description_format"),
-        "[preferences] weight_unit": data.get("preferences", {}).get("weight_unit"),
+        "[hevy] api_key / HEVY_API_KEY env var": hevy_api_key,
+        "[google_calendar] credentials_file": credentials_file,
+        "[google_calendar] calendar_id / GOOGLE_CALENDAR_ID env var": calendar_id,
+        "[preferences] description_format": pref.get("description_format"),
+        "[preferences] weight_unit": pref.get("weight_unit"),
     }
     for key, value in required.items():
         if not value:
             print(f"Error: Missing {key} in config.toml")
             sys.exit(1)
 
-    pref = data["preferences"]
     if pref["description_format"] not in ("minimal", "detailed"):
         print("Error: [preferences] description_format must be 'minimal' or 'detailed'")
         sys.exit(1)
@@ -59,10 +71,10 @@ def load_config(path: str = "config.toml") -> Config:
         sys.exit(1)
 
     return Config(
-        hevy=HevyConfig(api_key=data["hevy"]["api_key"]),
+        hevy=HevyConfig(api_key=hevy_api_key),
         google_calendar=GoogleCalendarConfig(
-            credentials_file=data["google_calendar"]["credentials_file"],
-            calendar_id=data["google_calendar"]["calendar_id"],
+            credentials_file=credentials_file,
+            calendar_id=calendar_id,
         ),
         preferences=Preferences(
             description_format=pref["description_format"],
