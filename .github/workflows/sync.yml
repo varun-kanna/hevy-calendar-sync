@@ -44,6 +44,7 @@ jobs:
       - name: Run sync
         env:
           HEVY_API_KEY: ${{ secrets.HEVY_API_KEY }}
+          HEVY_RESYNC_ALL: "false"
         run: python sync.py
 
       - name: Commit updated sync state

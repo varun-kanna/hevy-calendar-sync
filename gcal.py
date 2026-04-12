@@ -95,15 +95,18 @@ def validate_calendar(service, calendar_id: str) -> None:
         raise
 
 
-def event_exists(service, calendar_id: str, workout_id: str) -> bool:
+def find_event_id(service, calendar_id: str, workout_id: str) -> str | None:
     result = service.events().list(
         calendarId=calendar_id,
         privateExtendedProperty=f"hevy_workout_id={workout_id}",
     ).execute()
-    return bool(result.get("items"))
+    items = result.get("items", [])
+    if not items:
+        return None
+    return items[0]["id"]
 
 
-def sync_workout(service, workout: Workout, config: Config) -> str:
+def sync_workout(service, workout: Workout, config: Config, event_id: str | None = None) -> str:
     event = {
         "summary": _build_summary(workout, config),
         "description": _build_description(workout, config),
@@ -113,6 +116,14 @@ def sync_workout(service, workout: Workout, config: Config) -> str:
             "private": {"hevy_workout_id": workout.id}
         },
     }
+    if event_id:
+        updated = service.events().update(
+            calendarId=config.google_calendar.calendar_id,
+            eventId=event_id,
+            body=event,
+        ).execute()
+        return updated["id"]
+
     created = service.events().insert(
         calendarId=config.google_calendar.calendar_id,
         body=event,

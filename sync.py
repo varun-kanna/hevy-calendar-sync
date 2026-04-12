@@ -1,17 +1,23 @@
 import sys
+import os
 from config import load_config, load_state, save_state, State
 from hevy import get_workouts_since
-from gcal import build_service, validate_calendar, event_exists, sync_workout
+from gcal import build_service, validate_calendar, find_event_id, sync_workout
 
 
 def main():
     config = load_config()
     state = load_state()
+    resync_all = os.environ.get("HEVY_RESYNC_ALL", "true").lower() in ("1", "true", "yes", "on")
+    since_marker = "" if resync_all else state.last_synced_at
 
-    print(f"Fetching workouts since: {state.last_synced_at or 'beginning of time'}")
+    if resync_all:
+        print("Fetching workouts since: beginning of time (full re-sync enabled)")
+    else:
+        print(f"Fetching workouts since: {state.last_synced_at or 'beginning of time'}")
 
     try:
-        workouts = get_workouts_since(config.hevy.api_key, state.last_synced_at)
+        workouts = get_workouts_since(config.hevy.api_key, since_marker)
     except Exception as e:
         print(f"Error fetching workouts from Hevy: {e}")
         sys.exit(1)
@@ -28,13 +34,13 @@ def main():
 
     try:
         for workout in workouts:
-            if event_exists(service, config.google_calendar.calendar_id, workout.id):
-                print(f"  Skipping duplicate: {workout.title} ({workout.start_time[:10]})")
-                last_written_time = workout.start_time
-                continue
-            sync_workout(service, workout, config)
+            existing_event_id = find_event_id(service, config.google_calendar.calendar_id, workout.id)
+            sync_workout(service, workout, config, existing_event_id)
             last_written_time = workout.start_time
-            print(f"  Synced: {workout.title} ({workout.start_time[:10]})")
+            if existing_event_id:
+                print(f"  Updated: {workout.title} ({workout.start_time[:10]})")
+            else:
+                print(f"  Synced: {workout.title} ({workout.start_time[:10]})")
     finally:
         if last_written_time != state.last_synced_at:
             save_state(State(last_synced_at=last_written_time, token_file=state.token_file))
